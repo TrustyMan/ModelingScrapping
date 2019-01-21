@@ -33,11 +33,15 @@ dbname 		= "modelStockprediction"
 stock_table_name = ['tbl_align', 'tbl_poly', 'tbl_aal', 'tbl_ibm', 'tbl_rrs']
 stockNames = ['ALGN', 'POLY', 'AAL', 'IBM', 'RRS']
 
+prev_market_type = ['OPEN', 'OPEN', 'OPEN', 'OPEN', 'OPEN']
+
 tradingview_url = 'https://www.tradingview.com/symbols/'
 stock_url = ['NASDAQ-ALGN', 'LSE-POLY', 'LSE-AAL', 'SIX-IBM', 'TSXV-RRS']
 
 tv_url='https://www.marketwatch.com/investing/stock/'
 stockUrl = ['algn', 'poly?countrycode=uk', 'aal?countrycode=uk', 'ibm', 'rrs?countrycode=ca']
+
+# prev_market_type = ['OPEN', 'OPEN'. 'OPEN', 'OPEN', 'OPEN']
 
 path_to_chromedriver = '/usr/bin/chromedriver'
 
@@ -73,26 +77,29 @@ def StockDataToSql(data1, data2, data3):
             # sql = "DELETE FROM " + stock_table_name[i] + " WHERE 1=1"
             # mycursor.execute(sql)
             # mydb.commit()
+            print(prev_market_type[i].upper(), i)
+            if((prev_market_type[i].upper() == 'OPEN' and data1[i][1].upper() == 'OPEN') or (prev_market_type[i].upper() != data1[i][1].upper())):
+                print(prev_market_type[i], data1[i][1], i)
 
-            datastr = ""
+                prev_market_type[i] = data1[i][1]
 
-            for j in range(29):                                    
-                datastr = datastr + "'" + data1[i][j] + "'" + ","               
-            
-            for j in range(11):
-                datastr = datastr + "'" + data2[i][j] + "'" + ","
+                datastr = ""
 
-            datastr = datastr + "'" + data3[i][0] + "'" + ","
-            datastr = datastr + "'" + data3[i][1] + "'"
+                for j in range(29):                                    
+                    datastr = datastr + "'" + data1[i][j] + "'" + ","               
+                
+                for j in range(11):
+                    datastr = datastr + "'" + data2[i][j] + "'" + ","
 
-            datastr = "(" + datastr + ")"
-            
-            print(datastr)
+                datastr = datastr + "'" + data3[i][0] + "'" + ","
+                datastr = datastr + "'" + data3[i][1] + "'"
 
-            sql = "INSERT INTO " + stock_table_name[i] + " (symbolName, marketType, price, changeValue, changePercent, open, marketCap, sharesOutstanding, publicFloat, beta, revPerEmployee, peRatio, eps, yield, dividend, exdividendDate, shortInterest, floatShorted, averageVolume, dayLow, dayHigh, weekLow52, weekHigh52, week1, month1, month3, ytd, year1, volume, PricetoBookRatio, QuickRatio, CurrentRatio, DERatio, ReturnonAssets, ReturnonEquity, ReturnonInvestedCapital, NetMargin, GrossMargin, OperatingMargin, PreTaxMargin, Recommendations, TargetPrice) VALUES " + datastr
+                datastr = "(" + datastr + ")"
 
-            mycursor.execute(sql)
-            mydb.commit()
+                sql = "INSERT INTO " + stock_table_name[i] + " (symbolName, marketType, price, changeValue, changePercent, open, marketCap, sharesOutstanding, publicFloat, beta, revPerEmployee, peRatio, eps, yield, dividend, exdividendDate, shortInterest, floatShorted, averageVolume, dayLow, dayHigh, weekLow52, weekHigh52, week1, month1, month3, ytd, year1, volume, PricetoBookRatio, QuickRatio, CurrentRatio, DERatio, ReturnonAssets, ReturnonEquity, ReturnonInvestedCapital, NetMargin, GrossMargin, OperatingMargin, PreTaxMargin, Recommendations, TargetPrice) VALUES " + datastr
+
+                mycursor.execute(sql)
+                mydb.commit()
             
         mycursor.close()
         mydb.close()
@@ -149,7 +156,6 @@ def getStockData():
         text=text.replace(p,"")
 
         marketType = text
-
 
         pp = containers.findAll("bg-quote", {"class":"value"})
         price = ""
