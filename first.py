@@ -77,9 +77,8 @@ def StockDataToSql(data1, data2, data3):
             # sql = "DELETE FROM " + stock_table_name[i] + " WHERE 1=1"
             # mycursor.execute(sql)
             # mydb.commit()
-            print(prev_market_type[i].upper(), i)
             if((prev_market_type[i].upper() == 'OPEN' and data1[i][1].upper() == 'OPEN') or (prev_market_type[i].upper() != data1[i][1].upper())):
-                print(prev_market_type[i], data1[i][1], i)
+                print('saved', prev_market_type[i], data1[i][1], i)
 
                 prev_market_type[i] = data1[i][1]
 
@@ -100,6 +99,9 @@ def StockDataToSql(data1, data2, data3):
 
                 mycursor.execute(sql)
                 mydb.commit()
+
+            else:
+                print('unsaved', prev_market_type[i], data1[i][1], i)
             
         mycursor.close()
         mydb.close()
