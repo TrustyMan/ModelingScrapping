@@ -77,31 +77,32 @@ def StockDataToSql(data1, data2, data3):
             # sql = "DELETE FROM " + stock_table_name[i] + " WHERE 1=1"
             # mycursor.execute(sql)
             # mydb.commit()
-            if((prev_market_type[i].upper() == 'OPEN' and data1[i][1].upper() == 'OPEN') or (prev_market_type[i].upper() != data1[i][1].upper())):
-                print('saved', prev_market_type[i], data1[i][1], i)
 
-                prev_market_type[i] = data1[i][1]
+            # if((prev_market_type[i].upper() == 'OPEN' and data1[i][1].upper() == 'OPEN') or (prev_market_type[i].upper() != data1[i][1].upper())):
+            prev_market_type[i] = data1[i][1]
 
-                datastr = ""
+            datastr = ""
 
-                for j in range(29):                                    
-                    datastr = datastr + "'" + data1[i][j] + "'" + ","               
-                
-                for j in range(11):
-                    datastr = datastr + "'" + data2[i][j] + "'" + ","
+            for j in range(29):                                    
+                datastr = datastr + "'" + data1[i][j] + "'" + ","               
+            
+            for j in range(11):
+                datastr = datastr + "'" + data2[i][j] + "'" + ","
 
-                datastr = datastr + "'" + data3[i][0] + "'" + ","
-                datastr = datastr + "'" + data3[i][1] + "'"
+            datastr = datastr + "'" + data3[i][0] + "'" + ","
+            datastr = datastr + "'" + data3[i][1] + "'"
 
-                datastr = "(" + datastr + ")"
+            datastr = "(" + datastr + ")"
 
-                sql = "INSERT INTO " + stock_table_name[i] + " (symbolName, marketType, price, changeValue, changePercent, open, marketCap, sharesOutstanding, publicFloat, beta, revPerEmployee, peRatio, eps, yield, dividend, exdividendDate, shortInterest, floatShorted, averageVolume, dayLow, dayHigh, weekLow52, weekHigh52, week1, month1, month3, ytd, year1, volume, PricetoBookRatio, QuickRatio, CurrentRatio, DERatio, ReturnonAssets, ReturnonEquity, ReturnonInvestedCapital, NetMargin, GrossMargin, OperatingMargin, PreTaxMargin, Recommendations, TargetPrice) VALUES " + datastr
+            sql = "INSERT INTO " + stock_table_name[i] + " (symbolName, marketType, price, changeValue, changePercent, open, marketCap, sharesOutstanding, publicFloat, beta, revPerEmployee, peRatio, eps, yield, dividend, exdividendDate, shortInterest, floatShorted, averageVolume, dayLow, dayHigh, weekLow52, weekHigh52, week1, month1, month3, ytd, year1, volume, PricetoBookRatio, QuickRatio, CurrentRatio, DERatio, ReturnonAssets, ReturnonEquity, ReturnonInvestedCapital, NetMargin, GrossMargin, OperatingMargin, PreTaxMargin, Recommendations, TargetPrice) VALUES " + datastr
 
-                mycursor.execute(sql)
-                mydb.commit()
+            mycursor.execute(sql)
+            mydb.commit()
 
-            else:
-                print('unsaved', prev_market_type[i], data1[i][1], i)
+            print('saved', prev_market_type[i], data1[i][1], i)
+
+            # else:
+            #     print('unsaved', prev_market_type[i], data1[i][1], i)
             
         mycursor.close()
         mydb.close()
