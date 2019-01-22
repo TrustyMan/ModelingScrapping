@@ -109,21 +109,6 @@ def StockDataToSql(data1, data2, data3):
         print("StockData Saved Successfully!")
     except Exception as e: print(e)
 
-
-def thread_StockData():
-    while 1:
-        start_time = time.time()
-        data1 = getStockData()
-        data2 = getStockData2()
-        data3 = getStockData3()
-        # print(data1)
-        # print(data2)
-        # print(data3)
-        StockDataToSql(data1, data2, data3)
-        execute_time = time.time() - start_time
-        print("Stock Scrapping Time:", execute_time)
-        time.sleep(1)
-
 def getStockData():
     rtArray =  list()
 
@@ -398,10 +383,13 @@ def getStockData3():
 
 
 def main():
-	try:
-         _thread.start_new_thread( thread_StockData, () )
-	except:
-		print ("Error: unable to start thread")
 	while 1:
-		pass
+        start_time = time.time()
+        data1 = getStockData()
+        data2 = getStockData2()
+        data3 = getStockData3()
+        StockDataToSql(data1, data2, data3)
+        execute_time = time.time() - start_time
+        print("Stock Scrapping Time:", execute_time)
+        time.sleep(3600 - execute_time)
 main()
