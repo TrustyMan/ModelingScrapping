@@ -90,11 +90,15 @@ def StockDataToSql(data1, data2, data3):
                 datastr = datastr + "'" + data2[i][j] + "'" + ","
 
             datastr = datastr + "'" + data3[i][0] + "'" + ","
-            datastr = datastr + "'" + data3[i][1] + "'"
+            datastr = datastr + "'" + data3[i][1] + "'" + ","
+
+            mydatetime = datetime.datetime.now().strftime("%y-%m-%d %H:%M")
+            datastr = datastr + "'" + mydatetime + "'"
 
             datastr = "(" + datastr + ")"
 
-            sql = "INSERT INTO " + stock_table_name[i] + " (symbolName, marketType, price, changeValue, changePercent, open, marketCap, sharesOutstanding, publicFloat, beta, revPerEmployee, peRatio, eps, yield, dividend, exdividendDate, shortInterest, floatShorted, averageVolume, dayLow, dayHigh, weekLow52, weekHigh52, week1, month1, month3, ytd, year1, volume, PricetoBookRatio, QuickRatio, CurrentRatio, DERatio, ReturnonAssets, ReturnonEquity, ReturnonInvestedCapital, NetMargin, GrossMargin, OperatingMargin, PreTaxMargin, Recommendations, TargetPrice) VALUES " + datastr
+
+            sql = "INSERT INTO " + stock_table_name[i] + " (symbolName, marketType, price, changeValue, changePercent, open, marketCap, sharesOutstanding, publicFloat, beta, revPerEmployee, peRatio, eps, yield, dividend, exdividendDate, shortInterest, floatShorted, averageVolume, dayLow, dayHigh, weekLow52, weekHigh52, week1, month1, month3, ytd, year1, volume, PricetoBookRatio, QuickRatio, CurrentRatio, DERatio, ReturnonAssets, ReturnonEquity, ReturnonInvestedCapital, NetMargin, GrossMargin, OperatingMargin, PreTaxMargin, Recommendations, TargetPrice, GotTime) VALUES " + datastr
 
             mycursor.execute(sql)
             mydb.commit()
@@ -383,7 +387,7 @@ def getStockData3():
 
 
 def main():
-	while 1:
+    while 1:
         start_time = time.time()
         data1 = getStockData()
         data2 = getStockData2()
