@@ -25,7 +25,7 @@ import bs4
 from bs4 import BeautifulSoup as soup
 import requests
 
-hosturl 	= "34.73.255.82"
+hosturl 	= "34.196.73.16"
 dbuser 		= "root"
 dbpassoword = "password"
 dbname 		= "modelStockprediction"
@@ -62,6 +62,13 @@ options.add_argument("--no-sandbox")
 options.add_argument("--disable-extensions")
 options.add_argument("--dns-prefetch-disable")
 
+def checkState(datas):
+    if(datas.upper() == 'CLOSED' or datas.upper() == 'AFTER HOURS'):
+        return 1
+    else:
+        return 0
+
+
 def StockDataToSql(data1, data2, data3):
     try:
         mydb = mysql.connector.connect(
@@ -73,40 +80,35 @@ def StockDataToSql(data1, data2, data3):
         mycursor = mydb.cursor()
 
         for i in range(5):
+            if((prev_market_type[i] != data1[i][1]) and !(checkState(prev_market_type[i]) == 1 and checkState(data1[i][1]) ==1)):
 
-            # sql = "DELETE FROM " + stock_table_name[i] + " WHERE 1=1"
-            # mycursor.execute(sql)
-            # mydb.commit()
+                datastr = ""
 
-            # if(prev_market_type[i].upper() != 'CLOSE' and data1[i][1].upper() != 'CLOSE'):
+                for j in range(29):                                    
+                    datastr = datastr + "'" + data1[i][j] + "'" + ","               
             
+                for j in range(11):
+                    datastr = datastr + "'" + data2[i][j] + "'" + ","
+
+                datastr = datastr + "'" + data3[i][0] + "'" + ","
+                datastr = datastr + "'" + data3[i][1] + "'" + ","
+
+                mydatetime = datetime.datetime.now().strftime("%y-%m-%d %H:%M")
+                datastr = datastr + "'" + mydatetime + "'"
+
+                datastr = "(" + datastr + ")"
+
+                sql = "INSERT INTO " + stock_table_name[i] + " (symbolName, marketType, price, changeValue, changePercent, open, marketCap, sharesOutstanding, publicFloat, beta, revPerEmployee, peRatio, eps, yield, dividend, exdividendDate, shortInterest, floatShorted, averageVolume, dayLow, dayHigh, weekLow52, weekHigh52, week1, month1, month3, ytd, year1, volume, PricetoBookRatio, QuickRatio, CurrentRatio, DERatio, ReturnonAssets, ReturnonEquity, ReturnonInvestedCapital, NetMargin, GrossMargin, OperatingMargin, PreTaxMargin, Recommendations, TargetPrice, GotTime) VALUES " + datastr
+
+                mycursor.execute(sql)
+                mydb.commit()
+
+                print('saved', prev_market_type[i], data1[i][1], i)
+
+            else:
+                print('unsaved')
+
             prev_market_type[i] = data1[i][1]
-
-            datastr = ""
-
-            for j in range(29):                                    
-                datastr = datastr + "'" + data1[i][j] + "'" + ","               
-        
-            for j in range(11):
-                datastr = datastr + "'" + data2[i][j] + "'" + ","
-
-            datastr = datastr + "'" + data3[i][0] + "'" + ","
-            datastr = datastr + "'" + data3[i][1] + "'" + ","
-
-            mydatetime = datetime.datetime.now().strftime("%y-%m-%d %H:%M")
-            datastr = datastr + "'" + mydatetime + "'"
-
-            datastr = "(" + datastr + ")"
-
-            sql = "INSERT INTO " + stock_table_name[i] + " (symbolName, marketType, price, changeValue, changePercent, open, marketCap, sharesOutstanding, publicFloat, beta, revPerEmployee, peRatio, eps, yield, dividend, exdividendDate, shortInterest, floatShorted, averageVolume, dayLow, dayHigh, weekLow52, weekHigh52, week1, month1, month3, ytd, year1, volume, PricetoBookRatio, QuickRatio, CurrentRatio, DERatio, ReturnonAssets, ReturnonEquity, ReturnonInvestedCapital, NetMargin, GrossMargin, OperatingMargin, PreTaxMargin, Recommendations, TargetPrice, GotTime) VALUES " + datastr
-
-            mycursor.execute(sql)
-            mydb.commit()
-
-            print('saved', prev_market_type[i], data1[i][1], i)
-
-            # else:
-            #     print('unsaved')
             
         mycursor.close()
         mydb.close()
