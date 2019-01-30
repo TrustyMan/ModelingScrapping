@@ -78,34 +78,35 @@ def StockDataToSql(data1, data2, data3):
             # mycursor.execute(sql)
             # mydb.commit()
 
-            if(prev_market_type[i].upper() != 'CLOSE' and data1[i][1].upper() != 'CLOSE'):
-                prev_market_type[i] = data1[i][1]
-
-                datastr = ""
-
-                for j in range(29):                                    
-                    datastr = datastr + "'" + data1[i][j] + "'" + ","               
+            # if(prev_market_type[i].upper() != 'CLOSE' and data1[i][1].upper() != 'CLOSE'):
             
-                for j in range(11):
-                    datastr = datastr + "'" + data2[i][j] + "'" + ","
+            prev_market_type[i] = data1[i][1]
 
-                datastr = datastr + "'" + data3[i][0] + "'" + ","
-                datastr = datastr + "'" + data3[i][1] + "'" + ","
+            datastr = ""
 
-                mydatetime = datetime.datetime.now().strftime("%y-%m-%d %H:%M")
-                datastr = datastr + "'" + mydatetime + "'"
+            for j in range(29):                                    
+                datastr = datastr + "'" + data1[i][j] + "'" + ","               
+        
+            for j in range(11):
+                datastr = datastr + "'" + data2[i][j] + "'" + ","
 
-                datastr = "(" + datastr + ")"
+            datastr = datastr + "'" + data3[i][0] + "'" + ","
+            datastr = datastr + "'" + data3[i][1] + "'" + ","
 
-                sql = "INSERT INTO " + stock_table_name[i] + " (symbolName, marketType, price, changeValue, changePercent, open, marketCap, sharesOutstanding, publicFloat, beta, revPerEmployee, peRatio, eps, yield, dividend, exdividendDate, shortInterest, floatShorted, averageVolume, dayLow, dayHigh, weekLow52, weekHigh52, week1, month1, month3, ytd, year1, volume, PricetoBookRatio, QuickRatio, CurrentRatio, DERatio, ReturnonAssets, ReturnonEquity, ReturnonInvestedCapital, NetMargin, GrossMargin, OperatingMargin, PreTaxMargin, Recommendations, TargetPrice, GotTime) VALUES " + datastr
+            mydatetime = datetime.datetime.now().strftime("%y-%m-%d %H:%M")
+            datastr = datastr + "'" + mydatetime + "'"
 
-                mycursor.execute(sql)
-                mydb.commit()
+            datastr = "(" + datastr + ")"
 
-                print('saved', prev_market_type[i], data1[i][1], i)
+            sql = "INSERT INTO " + stock_table_name[i] + " (symbolName, marketType, price, changeValue, changePercent, open, marketCap, sharesOutstanding, publicFloat, beta, revPerEmployee, peRatio, eps, yield, dividend, exdividendDate, shortInterest, floatShorted, averageVolume, dayLow, dayHigh, weekLow52, weekHigh52, week1, month1, month3, ytd, year1, volume, PricetoBookRatio, QuickRatio, CurrentRatio, DERatio, ReturnonAssets, ReturnonEquity, ReturnonInvestedCapital, NetMargin, GrossMargin, OperatingMargin, PreTaxMargin, Recommendations, TargetPrice, GotTime) VALUES " + datastr
 
-            else:
-                print('unsaved')
+            mycursor.execute(sql)
+            mydb.commit()
+
+            print('saved', prev_market_type[i], data1[i][1], i)
+
+            # else:
+            #     print('unsaved')
             
         mycursor.close()
         mydb.close()
