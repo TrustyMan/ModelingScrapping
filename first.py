@@ -80,7 +80,7 @@ def StockDataToSql(data1, data2, data3):
         mycursor = mydb.cursor()
 
         for i in range(5):
-            if((prev_market_type[i] != data1[i][1]) and !(checkState(prev_market_type[i]) == 1 and checkState(data1[i][1]) ==1)):
+            if((prev_market_type[i] != data1[i][1]) or (checkState(prev_market_type[i]) == 0 and checkState(data1[i][1]) == 0)):
 
                 datastr = ""
 
